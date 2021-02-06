@@ -10,21 +10,10 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // define association here
+      this.hasMany(models.Student, { foreign_key: 'user_id'});
+      this.hasMany(models.Instructor, { foreign_key: 'user_id'});
     }
   };
-
-  // add more fields here to user schema when needed!
-
-  // username max len 20 chars
-  // email max len 100 chars
-
-  // if you change user schema, edit the migration accordingly and run
-  // > sequelize db:migrate:undo 
-  // to cancel the migration by undoing the latest migration, and then run 
-  // > sequelize db:migrate 
-  // to remigrate 
-
   User.init({
     username: {
       type: DataTypes.STRING(20),
@@ -57,11 +46,13 @@ module.exports = (sequelize, DataTypes) => {
         this.setDataValue('matches',val.join(';'));
       },
     },
-    },
-     {
+    role: {
+      type: DataTypes.STRING, 
+      allowNull: false
+    }
+  }, {
     sequelize,
     modelName: 'User',
-    tableName: 'users'
   });
   return User;
 };

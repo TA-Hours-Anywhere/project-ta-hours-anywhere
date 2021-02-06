@@ -1,12 +1,10 @@
 'use strict';
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('users', {
+    await queryInterface.createTable('Users', {
       id: {
-        allowNull: false,
-        autoIncrement: true,
-        primaryKey: true,
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER, 
+        primary_key: true
       },
       username: {
         type: Sequelize.STRING(20),
@@ -17,6 +15,12 @@ module.exports = {
         type: Sequelize.STRING(100),
         allowNull: false,
         unique: true,
+        validate: {
+          isEmail: {
+            args: true,
+            msg: 'must be a valid email address',
+          }
+        }
       },
       password: {
         type: Sequelize.STRING,
@@ -33,6 +37,10 @@ module.exports = {
           this.setDataValue('matches',val.join(';'));
         },
       },
+      type: {
+        type: Sequelize.STRING, 
+        allowNull: false
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE
@@ -44,6 +52,6 @@ module.exports = {
     });
   },
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('users');
+    await queryInterface.dropTable('Users');
   }
 };

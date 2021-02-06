@@ -14,7 +14,7 @@ module.exports = {
             if(obj.isInstructor){
               return 'Instructor';
             } else {
-                return 'User'
+                return 'Student'
             }
           },
     },
@@ -42,11 +42,28 @@ module.exports = {
                 if (!user) throw new AuthenticationError('unauthenticated user')
 
                 // get users except for current instructor
-                const instructors = await Instructor.findAll({
-                    where: { username: { [Op.ne]: user.username } }
+                const instructors = await User.findAll({
+                    where: { role: { [Op.eq]: 'instructor'}, username: { [Op.ne]: user.username } }
                 })
 
                 return instructors
+
+            } catch (err) {
+                console.log(err)
+                throw err
+            }
+        },
+        getStudents: async (_, __, { user }) => {
+            try {
+                // user is object that issued getUser, passed into by context middleware
+                if (!user) throw new AuthenticationError('unauthenticated user')
+
+                // get users except for current student
+                const students = await User.findAll({
+                    where: { role: { [Op.eq]: 'student'}, username: { [Op.ne]: user.username } }
+                })
+
+                return students
 
             } catch (err) {
                 console.log(err)
@@ -71,15 +88,11 @@ module.exports = {
 
                 // search db for student/instructor, create new object based on if student or instructor
                 let user
-                if (isInstructor) {
-                    user = await Instructor.findOne({
-                        where: { username }
-                    })
-                } else {
-                    user = await User.findOne({
-                        where: { username }
-                    })
-                }
+
+                user = await Instructor.findOne({
+                    where: { username }
+                })
+
 
                 // const user = await User.findOne({
                 //     where: { username }

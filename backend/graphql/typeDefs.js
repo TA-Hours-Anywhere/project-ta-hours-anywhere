@@ -14,16 +14,13 @@ module.exports = gql`
         imageUrl: String
         matches: [String]
         latestMessage: Message
+        role: String!
     }
     type Instructor {
-        username: String!
-        email: String!
-        createdAt: String!
-        token: String
-        imageUrl: String
-        isInstructor: Boolean!
-        matches: [String]
-        latestMessage: Message
+        user_id: Int!
+    }
+    type Student {
+        user_id: Int!
     }
     type Message{
         uuid: String!
@@ -44,8 +41,9 @@ module.exports = gql`
     union StudOrInst = User | Instructor
     type Query {
         getUsers:[User]!
+        getStudents: [Student]!
         getInstructors: [Instructor]!
-        getMatchedStudents:[User]!
+        getMatchedStudents:[Student]!
         getMatchedInstructors:[Instructor]!
         login(
             username: String!
@@ -61,12 +59,6 @@ module.exports = gql`
             password: String! 
             confirmPassword: String!
             ): User!
-        registerInstructor(
-            username: String! 
-            email: String! 
-            password: String! 
-            confirmPassword: String!
-            ): Instructor!
         sendMessage(
             to: String!
             content: String!
